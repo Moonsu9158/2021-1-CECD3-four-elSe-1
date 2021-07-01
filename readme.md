@@ -27,7 +27,7 @@
 
 - cudnn == 7.6.5(tensorflow-gpu 1.15설치시 자동 설치)
 
-- Pillow
+- cv2(pip install opencv_contrib_python)
 
 - cython
 

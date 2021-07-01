@@ -35,6 +35,8 @@
 
 - tqdm
 
+- keras-retinanet(pip로 설치)
+
 # dataset
 
 - [구글 드라이브 다운로드 링크](https://drive.google.com/drive/folders/1LUcWabcn_bu5u9iSkQN7LKuIzLStX832?usp=sharing)

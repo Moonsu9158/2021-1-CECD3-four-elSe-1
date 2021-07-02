@@ -96,10 +96,13 @@ def object_detection(model, inputData_list, dataset_path,output_path):
             labels_to_num[label] += 1
 
             b = box.astype(int)
-            print(type(b))
-            object_img = draw[b[1]:b[3],b[0]:b[2]]
-            #print(object_img)
-            object_img = Image.fromarray(object_img)
+        
+            cropped_img = draw[b[1]:b[3],b[0]:b[2]]
+            cropped_img = Image.fromarray(cropped_img)
+            cropped_img = cropped_img.resize((512,512))
+            cropped_img = np.asarray(cropped_img, dtype="int32")
+            cropped_img = cropped_img.tolist()
+            # print(cropped_img)
 
             imagePath_str = imagePath.replace('/','-')
 
@@ -107,7 +110,7 @@ def object_detection(model, inputData_list, dataset_path,output_path):
             # os.chdir(output_path)
             # object_img.save(output_path + "{}_path: ({}).jpg".format(labels_to_names_seq[label]+str(labels_to_num[label]),imagePath_str))
             filename = output_path + "{}_path: ({}).json".format(labels_to_names_seq[label]+str(labels_to_num[label]),imagePath_str)
-            jsonFormatter(b, label,img_name,filename)
+            jsonFormatter(b, label,img_name,cropped_img, filename)
             # os.chdir('../')
     
     print("detection 완료!")

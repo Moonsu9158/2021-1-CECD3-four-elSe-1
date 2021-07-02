@@ -96,9 +96,9 @@ def object_detection(model, inputData_list, dataset_path,output_path):
             labels_to_num[label] += 1
 
             b = box.astype(int)
-            print(type(b))
+        
             object_img = draw[b[1]:b[3],b[0]:b[2]]
-            #print(object_img)
+            print("object type : "+ str(type(object_img)))
             object_img = Image.fromarray(object_img)
 
             imagePath_str = imagePath.replace('/','-')

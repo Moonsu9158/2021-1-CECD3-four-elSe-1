@@ -40,7 +40,7 @@ inputData_list = os.listdir(os.getcwd())
 os.chdir('../')
 
 
-from object_detection2 import object_detection
+from object_detection3 import object_detection
 object_detection(retina_model, inputData_list, dataset_path, output_path)
 
 # image retrieval

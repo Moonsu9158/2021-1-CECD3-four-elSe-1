@@ -11,7 +11,7 @@ import base64
 import codecs, json
 import pickle
 import matplotlib.pyplot as plt
-import tensorflow.keras
+import keras
 from PIL import Image
 
 # import keras
@@ -23,26 +23,17 @@ from keras_retinanet.utils.image import read_image_bgr, preprocess_image, resize
 from keras_retinanet.utils.visualization import draw_box, draw_caption
 from keras_retinanet.utils.colors import label_color
 #from keras_retinanet.utils.gpu import setup_gpu
-from tensorflow.keras.models import Model
+from keras.models import Model
 
 
-import tensorflow as tf
 
 # #### keras-retinanet으로 pretrained된 coco 모델 다운로드하고 해당 모델을 로드
 # 아래 모델은 https://github.com/fizyr/keras-retinanet/releases 에서 download 받을 수 있음. 
 # 해당 모델 h5 파일을 snapshot 디렉토리에 저장 후 retina model의 load_model()을 이용하여 모델 로딩.
 # !wget https://github.com/fizyr/keras-retinanet/releases/download/0.5.1/resnet50_coco_best_v2.1.0.h5 
 
-os.path.join('./keras-retinanet', 'snapshots', 'resnet50_coco_best_v2.1.0.h5')
-
-model_path = os.path.join('./keras-retinanet', 'snapshots', 'resnet50_coco_best_v2.1.0.h5')
-
-#데이터셋 경로
-dataset_path = './data/'
-output_path = './output/'
 
 # pretrained coco 모델 파일을 retinanet 모델로 로딩.  
-retina_model = models.load_model(model_path, backbone_name='resnet50')
 
 
 # # Feature Map 출력
@@ -60,18 +51,14 @@ labels_to_names_seq = {0:'person',1:'bicycle',2:'car',3:'motorbike',4:'aeroplane
 
 labels_to_num = [0]*len(labels_to_names_seq)
 
-#CroppedObjectImage = [] # 사진별 객체 이미지를 Crop하여 저장할 배열
 
 # load image dataset
-os.chdir(dataset_path)
-dataset_list = os.listdir(os.getcwd())
-os.chdir('../')
 
-
-    # load image
     
-def object_detection(model, image_array):
-    for img_name in image_array:
+def object_detection(model, inputData_list, dataset_path,output_path):
+
+
+    for img_name in inputData_list:
         print("handling "+img_name)
         imagePath = dataset_path + img_name
         image = read_image_bgr(imagePath)
@@ -89,7 +76,7 @@ def object_detection(model, image_array):
 
         # 이미지에 대해 Object Detection 수행. 
         start = time.time()
-        boxes, scores, labels = retina_model.predict_on_batch(np.expand_dims(image, axis=0))
+        boxes, scores, labels = model.predict_on_batch(np.expand_dims(image, axis=0))
         print(boxes.shape, scores.shape, labels.shape)
         print("processing time: ", time.time() - start)
 
@@ -113,9 +100,9 @@ def object_detection(model, image_array):
             imagePath_str = imagePath.replace('/','-')
 
             # 객체 dump
-            os.chdir(output_path)
-            object_img.save("{}_path: ({}).jpg".format(labels_to_names_seq[label]+str(labels_to_num[label]),imagePath_str))
-            os.chdir('../')
+           # os.chdir(output_path)
+            object_img.save(output_path + "{}_path: ({}).jpg".format(labels_to_names_seq[label]+str(labels_to_num[label]),imagePath_str))
+           # os.chdir('../')
     
     print("detection 완료!")
 

@@ -30,8 +30,8 @@ os.path.join('./keras-retinanet', 'snapshots', 'resnet50_coco_best_v2.1.0.h5')
 model_path = os.path.join('./keras-retinanet', 'snapshots', 'resnet50_coco_best_v2.1.0.h5')
 
 #데이터셋 경로
-dataset_path = './person_data/'
-output_path = './retrieval_data/train/'
+dataset_path = "./original_train/"
+output_path = "./detected_data/detected_from_train/"
 
 
 retina_model = models.load_model(model_path, backbone_name='resnet50')

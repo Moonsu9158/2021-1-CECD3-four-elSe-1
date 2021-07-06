@@ -9,7 +9,7 @@ import numpy as np
  autoencoder.py  (author: Anson Wong / git: ankonzoid)
 
 """
-
+layers = keras.layers
 
 class AutoEncoder():
 
@@ -55,7 +55,7 @@ class AutoEncoder():
             convkernel = (3, 3)  # convolution kernel
             poolkernel = (2, 2)  # pooling kernel
 
-            input = keras.layers.Input(shape=shape_img)  # (512, 512)
+            input = layers.Input(shape=shape_img)  # (512, 512)
             x = keras.layers.Conv2D(
                 n_hidden_1, convkernel, activation='relu', padding='same')(input)  # (512, 512)
             x = keras.layers.MaxPooling2D(poolkernel, padding='same')(

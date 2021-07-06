@@ -3,7 +3,7 @@ import keras
 from src.utils import split
 import tensorflow as tf
 import numpy as np
-from . import AutoEncoderFactory
+from .AutoEncoderFactory import AutoEncoderFactory
 
 """
 

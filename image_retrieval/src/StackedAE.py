@@ -11,7 +11,7 @@ class StackedAE(AbstractAE):
         self.input = keras.layers.Input(shape=self.shape_img)
 
         # encoder
-        x = keras.layers.Conv2D(64, kernel_size=(3,3), activation="relu", padding="same")(input)
+        x = keras.layers.Conv2D(64, kernel_size=(3,3), activation="relu", padding="same")(self.input)
         x = keras.layers.MaxPool2D(pool_size=2, strides=2, padding="same")(x)
         x = keras.layers.Conv2D(128, kernel_size=(3,3), strides=1, activation="relu", kernel_regularizer=keras.regularizers.l2(0.001),padding="same")(x)
         x = keras.layers.MaxPool2D(pool_size=2, strides=2, padding="same")(x)

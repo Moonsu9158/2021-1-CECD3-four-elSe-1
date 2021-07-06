@@ -1,17 +1,17 @@
 
 import keras
-from . import SimpleAE
-from . import StackedAE
+from .SimpleAE import SimpleAE
+from .StackedAE import StackedAE
 
 
 class AutoEncoderFactory:
     def makeAE(self,modelName,info):
         if modelName == "simpleAE":
-            ae = SimpleAE(info)
+            return SimpleAE(info)
         elif modelName == "convAE":
             pass
         elif modelName == "stackedAE":
-            ae = StackedAE(info)
+            return StackedAE(info)
             
 
         

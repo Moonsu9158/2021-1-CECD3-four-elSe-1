@@ -138,9 +138,6 @@ def image_retrieval():
     #                          range_imgs=[0, 255],
     #                          range_imgs_reconstruct=[0, 1])
 
-    plot_img(E_train[0])
-
-    
     # Fit kNN model on training images
     print("Fitting k-nearest-neighbour model on training images...")
     knn = NearestNeighbors(n_neighbors=5, metric="cosine")

@@ -15,3 +15,14 @@ class AbstractAE(metaclass=ABCMeta):
     @abstractmethod
     def makeDecoder(self):
         pass
+
+    @abstractmethod
+    def getInputshape(self):
+        pass
+
+    @abstractmethod
+    def getOutputshape(self):
+        pass
+    
+    def getShape_img(self):
+        return self.shape_img

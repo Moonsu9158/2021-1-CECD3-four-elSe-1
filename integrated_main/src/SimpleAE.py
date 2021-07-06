@@ -37,6 +37,10 @@ class SimpleAE(AbstractAE):
         self.decoder = keras.Model(decoded_input, decoded_output)
         return self.decoder
 
+    def getInputshape(self):
+        return (self.input.shape[1],)
 
+    def getOutputshape(self):
+        return (self.encoded.shape[1],)
 
 

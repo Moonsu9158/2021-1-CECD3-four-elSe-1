@@ -67,4 +67,4 @@ class StackedAE(AbstractAE):
 
     def getOutputshape(self):
         # return tuple([int(x) for x in self.encoder.output.shape])
-        return tuple([int(x) for x in self.encoded.shape])
+        return tuple([int(x) for x in self.encoded.shape[1:]])

@@ -1,7 +1,7 @@
 import json
 import uuid
 
-def jsonFormatter(b,label,img_name,filename):
+def jsonFormatter(b,label,img_name,croppedImg,filename):
 
     detected = {
         "objectID": str(uuid.uuid4()),
@@ -12,6 +12,7 @@ def jsonFormatter(b,label,img_name,filename):
             "ymax":b[2].item()
         },
         "tag": str(label),
+        "croppedImage":croppedImg,
         "IMG_URL" : img_name
     }
     

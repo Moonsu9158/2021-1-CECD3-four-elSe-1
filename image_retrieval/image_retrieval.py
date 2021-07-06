@@ -62,8 +62,8 @@ def image_retrieval():
         model.set_arch()
 
         shape_img_resize = model.getShape_img()
-        input_shape_model = model.getInputShape()
-        output_shape_model = model.getOutputShape()
+        input_shape_model = model.getInputshape()
+        output_shape_model = model.getOutputshape()
         
         n_epochs = 100 
         

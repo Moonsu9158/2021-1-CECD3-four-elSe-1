@@ -61,10 +61,3 @@ class StackedAE(AbstractAE):
         return self.decoder
 
         
-    def getInputshape(self):
-        # return tuple([int(x) for x in self.encoder.input.shape[1:]])
-        return tuple([int(x) for x in self.input.shape[1:]])
-
-    def getOutputshape(self):
-        # return tuple([int(x) for x in self.encoder.output.shape])
-        return tuple([int(x) for x in self.encoded.shape])

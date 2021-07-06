@@ -1,12 +1,13 @@
 
 import keras
+from keras.callbacks.callbacks import EarlyStopping
 from src.utils import split
 import tensorflow as tf
 import numpy as np
 from .AutoEncoderFactory import AutoEncoderFactory
 
 """
-
+W
  autoencoder.py  (author: Anson Wong / git: ankonzoid)
 
 """
@@ -22,14 +23,15 @@ class AutoEncoder:
         self.decoder = None
 
     # Train
-    def fit(self, X, n_epochs=50, batch_size=256):
+    def fit(self, X, n_epochs=50, batch_size=256, callbacks=None):
         indices_fracs = split(fracs=[0.9, 0.1], N=len(X), seed=0)
         X_train, X_valid = X[indices_fracs[0]], X[indices_fracs[1]]
         self.autoencoder.fit(X_train, X_train,
                              epochs=n_epochs,
                              batch_size=batch_size,
                              shuffle=True,
-                             validation_data=(X_valid, X_valid))
+                             validation_data=(X_valid, X_valid),
+                             callbacks=callbacks)
 
     # Inference
     def predict(self, X):

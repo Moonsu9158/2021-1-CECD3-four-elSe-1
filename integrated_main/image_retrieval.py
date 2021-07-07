@@ -23,16 +23,16 @@ from src.pretrained_model import Pretrained_Model
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 
-def image_retrieval(modelName, trainModel, parallel):
+def image_retrieval():
     # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
-#     modelName = "IncepResNet"  # try: "simpleAE", "convAE", "vgg19" , "IncepResNet", "ResNet50v2"
-#     trainModel = True
-#     parallel = False  # use multicore processing
+    modelName = "stackedAE"  # try: "simpleAE", "convAE", "vgg19" , "IncepResNet"
+    trainModel = True
+    parallel = False  # use multicore processing
 
     # Make paths
-    dataTrainDir = os.path.join(os.getcwd(), "detected_data", "detected_from_train")
-    dataQueryDir = os.path.join(os.getcwd(), "detected_data", "detected_from_test")
-    outDir = os.path.join(os.getcwd(), "retrieval_output", modelName)
+    dataTrainDir = os.path.join(os.getcwd(), "data", "train")
+    dataTestDir = os.path.join(os.getcwd(), "data", "test")
+    outDir = os.path.join(os.getcwd(), "output", modelName)
     if not os.path.exists(outDir):
         os.makedirs(outDir)
 
@@ -40,8 +40,8 @@ def image_retrieval(modelName, trainModel, parallel):
     extensions = [".jpg", ".jpeg"]
     print("Reading train images from '{}'...".format(dataTrainDir))
     imgs_train = read_imgs_dir(dataTrainDir, extensions, parallel=parallel)
-    print("Reading test images from '{}'...".format(dataQueryDir))
-    imgs_test = read_imgs_dir(dataQueryDir, extensions, parallel=parallel)
+    print("Reading test images from '{}'...".format(dataTestDir))
+    imgs_test = read_imgs_dir(dataTestDir, extensions, parallel=parallel)
     shape_img = imgs_train[0].shape
     print("Image shape = {}".format(shape_img))
 
@@ -61,20 +61,12 @@ def image_retrieval(modelName, trainModel, parallel):
         model = AutoEncoder(modelName, info)
         model.set_arch()
 
-        if modelName == "simpleAE":
-            shape_img_resize = shape_img
-            input_shape_model = (model.encoder.input.shape[1],)
-            output_shape_model = (model.encoder.output.shape[1],)
-            n_epochs = 30
-        elif modelName in ["convAE", "stackedAE"]:
-            shape_img_resize = shape_img
-            input_shape_model = tuple([int(x)
-                                       for x in model.encoder.input.shape[1:]])
-            output_shape_model = tuple(
-                [int(x) for x in model.encoder.output.shape[1:]])
-            n_epochs = 100 
-        else:
-            raise Exception("Invalid modelName!")
+        shape_img_resize = model.getShape_img()
+        input_shape_model = model.getInputShape()
+        output_shape_model = model.getOutputShape()
+        
+        n_epochs = 100 
+        
 
     elif modelName in ["vgg19", "ResNet50v2", "IncepResNet"]:
         pretrainedModel = Pretrained_Model(modelName,shape_img)
@@ -185,4 +177,4 @@ def image_retrieval(modelName, trainModel, parallel):
 
 if __name__ == "__main__":
     freeze_support()
-    image_retrieval(modelName="ResNet50v2", trainModel=False, parallel=False)
+    image_retrieval()

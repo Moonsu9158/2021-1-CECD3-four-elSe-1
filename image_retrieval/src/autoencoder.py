@@ -1,12 +1,13 @@
 
 import keras
+from keras.callbacks.callbacks import EarlyStopping
 from src.utils import split
 import tensorflow as tf
 import numpy as np
 from .AutoEncoderFactory import AutoEncoderFactory
 
 """
-
+W
  autoencoder.py  (author: Anson Wong / git: ankonzoid)
 
 """
@@ -21,15 +22,25 @@ class AutoEncoder:
         self.encoder = None
         self.decoder = None
 
+    def getShape_img(self):
+        return self.ae.getShape_img()
+
+    def getInputshape(self):
+        return self.ae.getInputshape()
+
+    def getOutputshape(self):
+        return self.ae.getOutputshape()
+
     # Train
-    def fit(self, X, n_epochs=50, batch_size=256):
+    def fit(self, X, n_epochs=50, batch_size=256, callbacks=None):
         indices_fracs = split(fracs=[0.9, 0.1], N=len(X), seed=0)
         X_train, X_valid = X[indices_fracs[0]], X[indices_fracs[1]]
         self.autoencoder.fit(X_train, X_train,
                              epochs=n_epochs,
                              batch_size=batch_size,
                              shuffle=True,
-                             validation_data=(X_valid, X_valid))
+                             validation_data=(X_valid, X_valid),
+                             callbacks=callbacks)
 
     # Inference
     def predict(self, X):
@@ -38,11 +49,11 @@ class AutoEncoder:
     # Set neural network architecture
     def set_arch(self):
         autoencoderFactory = AutoEncoderFactory()
-        ae = autoencoderFactory.makeAE(self.modelName,self.info)
+        self.ae = autoencoderFactory.makeAE(self.modelName,self.info)
 
-        self.autoencoder = ae.makeAutoencoder()
-        self.encoder = ae.makeEncoder()
-        self.decoder = ae.makeDecoder()
+        self.autoencoder = self.ae.makeAutoencoder()
+        self.encoder = self.ae.makeEncoder()
+        self.decoder = self.ae.makeDecoder()
 
         # Generate summaries
         print("\nautoencoder.summary():")

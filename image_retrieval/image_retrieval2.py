@@ -7,6 +7,7 @@
  query images, as well as the t-SNE visualizations.
 
 """
+from image_retrieval.src.CV_plot_utils import plot_img
 from multiprocessing import freeze_support
 import os
 import numpy as np
@@ -25,7 +26,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 def image_retrieval():
     # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
-    modelName = "stackedAE"  # try: "simpleAE", "convAE", "vgg19" , "IncepResNet"
+    modelName = "IncepResNet"  # try: "simpleAE", "convAE", "vgg19" , "IncepResNet"
     trainModel = True
     parallel = False  # use multicore processing
 
@@ -48,35 +49,9 @@ def image_retrieval():
     strategy = tf.distribute.MirroredStrategy()
 
     # Build models
-    if modelName in ["simpleAE", "convAE", "stackedAE"]:
+  
 
-        # Set up autoencoder
-        info = {
-            "shape_img": shape_img,
-            "autoencoderFile": os.path.join(outDir, "{}_autoecoder.h5".format(modelName)),
-            "encoderFile": os.path.join(outDir, "{}_encoder.h5".format(modelName)),
-            "decoderFile": os.path.join(outDir, "{}_decoder.h5".format(modelName)),
-            "checkpoint" : os.path.join(outDir,"{}_checkpoint.h5".format(modelName))
-        }
-        model = AutoEncoder(modelName, info)
-        model.set_arch()
-
-        if modelName == "simpleAE":
-            shape_img_resize = shape_img
-            input_shape_model = (model.encoder.input.shape[1],)
-            output_shape_model = (model.encoder.output.shape[1],)
-            n_epochs = 30
-        elif modelName in ["convAE", "stackedAE"]:
-            shape_img_resize = shape_img
-            input_shape_model = tuple([int(x)
-                                       for x in model.encoder.input.shape[1:]])
-            output_shape_model = tuple(
-                [int(x) for x in model.encoder.output.shape[1:]])
-            n_epochs = 100 
-        else:
-            raise Exception("Invalid modelName!")
-
-    elif modelName in ["vgg19", "ResNet50v2", "IncepResNet"]:
+    if modelName in ["vgg19", "ResNet50v2", "IncepResNet"]:
         pretrainedModel = Pretrained_Model(modelName,shape_img)
         model = pretrainedModel.buildModel()
         shape_img_resize, input_shape_model, output_shape_model = pretrainedModel.makeInOut()
@@ -116,25 +91,28 @@ def image_retrieval():
     print(" -> X_test.shape = {}".format(X_test.shape))
 
     # Train (if necessary)
-    if modelName in ["simpleAE", "convAE", "stackedAE"]:
-        if trainModel:
+    # if modelName in ["simpleAE", "convAE", "stackedAE"]:
+    #     if trainModel:
             
-            print('Number of devices: {}'.format(
-                strategy.num_replicas_in_sync))
-            with strategy.scope():
-                model.compile(loss="binary_crossentropy", optimizer="adam")
+    #         print('Number of devices: {}'.format(
+    #             strategy.num_replicas_in_sync))
+    #         with strategy.scope():
+    #             model.compile(loss="binary_crossentropy", optimizer="adam")
             
-            early_stopping = EarlyStopping(monitor="val_loss", mode="min", verbose=1,patience=6, min_delta=0.0001)
-            checkpoint = ModelCheckpoint(
-                    os.path.join(outDir,"{}_checkpoint.h5".format(modelName)),
-                    monitor="val_loss",
-                    mode="min",
-                    save_best_only=True)
+    #         early_stopping = EarlyStopping(monitor="val_loss", mode="min", verbose=1,patience=6, min_delta=0.0001)
+    #         checkpoint = ModelCheckpoint(
+    #                 os.path.join(outDir,"{}_checkpoint.h5".format(modelName)),
+    #                 monitor="val_loss",
+    #                 mode="min",
+    #                 save_best_only=True)
             
-            model.fit(X_train, n_epochs=n_epochs, batch_size=32,callbacks=[early_stopping, checkpoint])
-            model.save_models()
-        else:
-            model.load_models(loss="binary_crossentropy", optimizer="adam")
+    #         model.fit(X_train, n_epochs=n_epochs, batch_size=32,callbacks=[early_stopping, checkpoint])
+    #         model.save_models()
+    #     else:
+    #         model.load_models(loss="binary_crossentropy", optimizer="adam")
+
+    
+
 
     # Create embeddings using model
     print("Inferencing embeddings using pre-trained model...")
@@ -148,17 +126,17 @@ def image_retrieval():
     print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
 
     # Make reconstruction visualizations
-    if modelName in ["simpleAE", "convAE", "stackedAE"]:
-        print("Visualizing database image reconstructions...")
-        imgs_train_reconstruct = model.decoder.predict(E_train)
-        if modelName == "simpleAE":
-            imgs_train_reconstruct = imgs_train_reconstruct.reshape(
-                (-1,) + shape_img_resize)
-        plot_reconstructions(imgs_train, imgs_train_reconstruct,
-                             os.path.join(
-                                 outDir, "{}_reconstruct.png".format(modelName)),
-                             range_imgs=[0, 255],
-                             range_imgs_reconstruct=[0, 1])
+    # if modelName in ["simpleAE", "convAE", "stackedAE"]:
+    #     print("Visualizing database image reconstructions...")
+    #     imgs_train_reconstruct = model.decoder.predict(E_train)
+    #     if modelName == "simpleAE":
+    #         imgs_train_reconstruct = imgs_train_reconstruct.reshape(
+    #             (-1,) + shape_img_resize)
+    #     plot_reconstructions(imgs_train, imgs_train_reconstruct,
+    #                          os.path.join(
+    #                              outDir, "{}_reconstruct.png".format(modelName)),
+    #                          range_imgs=[0, 255],
+    #                          range_imgs_reconstruct=[0, 1])
 
     # Fit kNN model on training images
     print("Fitting k-nearest-neighbour model on training images...")

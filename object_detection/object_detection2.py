@@ -26,6 +26,7 @@ from keras_retinanet.utils.colors import label_color
 from keras.models import Model
 
 
+import tensorflow as tf
 
 # #### keras-retinanet으로 pretrained된 coco 모델 다운로드하고 해당 모델을 로드
 # 아래 모델은 https://github.com/fizyr/keras-retinanet/releases 에서 download 받을 수 있음. 
@@ -84,6 +85,8 @@ def object_detection(model, inputData_list, dataset_path,output_path):
         # correct for image scale
         boxes /= scale
 
+
+
         # visualize detections
         for box, score, label in zip(boxes[0], scores[0], labels[0]):
             # scores are sorted so we can break
@@ -93,7 +96,7 @@ def object_detection(model, inputData_list, dataset_path,output_path):
             labels_to_num[label] += 1
 
             b = box.astype(int)
-            #print(b)
+            print(type(b))
             object_img = draw[b[1]:b[3],b[0]:b[2]]
             #print(object_img)
             object_img = Image.fromarray(object_img)
@@ -103,10 +106,11 @@ def object_detection(model, inputData_list, dataset_path,output_path):
             # 객체 dump
             # os.chdir(output_path)
             # object_img.save(output_path + "{}_path: ({}).jpg".format(labels_to_names_seq[label]+str(labels_to_num[label]),imagePath_str))
-            jsonFormatter(box, label,img_name)
+            filename = output_path + "{}_path: ({}).json".format(labels_to_names_seq[label]+str(labels_to_num[label]),imagePath_str)
+            jsonFormatter(b, label,img_name,filename)
             # os.chdir('../')
     
     print("detection 완료!")
 
 
-object_detection(retina_model, dataset_list)
+# object_detection(retina_model, dataset_list)

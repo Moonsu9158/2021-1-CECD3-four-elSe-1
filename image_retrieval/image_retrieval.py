@@ -25,7 +25,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 def image_retrieval():
     # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
-    modelName = "IncepResNet"  # try: "simpleAE", "convAE", "vgg19" , "IncepResNet"
+    modelName = "stackedAE"  # try: "simpleAE", "convAE", "vgg19" , "IncepResNet"
     trainModel = True
     parallel = False  # use multicore processing
 
@@ -61,20 +61,12 @@ def image_retrieval():
         model = AutoEncoder(modelName, info)
         model.set_arch()
 
-        if modelName == "simpleAE":
-            shape_img_resize = shape_img
-            input_shape_model = (model.encoder.input.shape[1],)
-            output_shape_model = (model.encoder.output.shape[1],)
-            n_epochs = 30
-        elif modelName in ["convAE", "stackedAE"]:
-            shape_img_resize = shape_img
-            input_shape_model = tuple([int(x)
-                                       for x in model.encoder.input.shape[1:]])
-            output_shape_model = tuple(
-                [int(x) for x in model.encoder.output.shape[1:]])
-            n_epochs = 100 
-        else:
-            raise Exception("Invalid modelName!")
+        shape_img_resize = model.getShape_img()
+        input_shape_model = model.getInputshape()
+        output_shape_model = model.getOutputshape()
+        
+        n_epochs = 100 
+        
 
     elif modelName in ["vgg19", "ResNet50v2", "IncepResNet"]:
         pretrainedModel = Pretrained_Model(modelName,shape_img)

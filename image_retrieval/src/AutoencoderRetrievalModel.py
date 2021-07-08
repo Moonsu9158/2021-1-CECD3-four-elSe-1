@@ -1,10 +1,11 @@
 
 import keras
 from keras.callbacks.callbacks import EarlyStopping
-from src.utils import split
+from utils import split
 import tensorflow as tf
 import numpy as np
-from .AutoEncoderFactory import AutoEncoderFactory
+from .RetrievalModelFactory import RetrievalModelFactory
+from .AbstractRetrievalModel import AbstractRetrievalModel
 
 """
 W
@@ -13,11 +14,10 @@ W
 """
 layers = keras.layers
 
-class AutoEncoder:
+class AutoencoderRetrievalModel(AbstractRetrievalModel):
 
     def __init__(self, modelName, info):
-        self.modelName = modelName
-        self.info = info
+        super(AutoencdoerRetrievalModel, self).__init__(modelName,info)
         self.autoencoder = None
         self.encoder = None
         self.decoder = None
@@ -48,8 +48,8 @@ class AutoEncoder:
 
     # Set neural network architecture
     def set_arch(self):
-        autoencoderFactory = AutoEncoderFactory()
-        self.ae = autoencoderFactory.makeAE(self.modelName,self.info)
+        autoencoderFactory = RetrievalModelFactory()
+        self.ae = autoencoderFactory.makeRetrievalModel(self.modelName,self.info)
 
         self.autoencoder = self.ae.makeAutoencoder()
         self.encoder = self.ae.makeEncoder()

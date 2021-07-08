@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 import keras
 
-class Pretrained_Model:
+class PretrainedModel:
     def __init__(self, modelName,shape_img):
         self.modelName = modelName
         self.shape_img = shape_img

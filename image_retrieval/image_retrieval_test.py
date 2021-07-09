@@ -12,3 +12,5 @@ for path in tqdm(images_path):
     image_pil=Image.open(path)
     image_resized=image_pil.resize((512,512))
     image_resized.save(path)
+
+image_retrieval()

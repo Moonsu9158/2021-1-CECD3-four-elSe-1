@@ -13,6 +13,7 @@ from tensorflow.keras import layers
 from tensorflow.keras import datasets
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
+from .RetrievalModelFactory import RetrievalModelFactory
 from .AbstractRetrievalModel import AbstractRetrievalModel
 
 
@@ -20,7 +21,7 @@ layers=keras.layers
 
 class AutoencoderRetrievalGeneratorModel(AbstractRetrievalModel):
     def __init__(self, modelName, info):
-        super(AutoencoderRetrievalModel, self),__init__(modelName, info)
+        super(AutoencoderRetrievalGeneratorModel, self),__init__(modelName, info)
         self.autoencoder=None
         self.encoder=None
         self.decoder=None

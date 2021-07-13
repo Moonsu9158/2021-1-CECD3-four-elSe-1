@@ -16,7 +16,7 @@ layers = keras.layers
 
 class AutoencoderRetrievalModel(AbstractRetrievalModel):
 
-    def __init__(self, modelName, info):
+    def __init__(self, modelName, info): #초기화 메서드. 생성자. 호출시 자동으로 바로 실행
         super(AutoencdoerRetrievalModel, self).__init__(modelName,info)
         self.autoencoder = None
         self.encoder = None
@@ -32,7 +32,7 @@ class AutoencoderRetrievalModel(AbstractRetrievalModel):
         return self.ae.getOutputshape()
 
     # Train
-    def fit(self, X, n_epochs=50, batch_size=256, callbacks=None):
+    def fit(self, X, n_epochs=50, batch_size=256, callbacks=None): #fit함수
         indices_fracs = split(fracs=[0.9, 0.1], N=len(X), seed=0)
         X_train, X_valid = X[indices_fracs[0]], X[indices_fracs[1]]
         self.autoencoder.fit(X_train, X_train,
@@ -43,7 +43,7 @@ class AutoencoderRetrievalModel(AbstractRetrievalModel):
                              callbacks=callbacks)
 
     # Inference
-    def predict(self, X):
+    def predict(self, X): #예측값 반환
         return self.encoder.predict(X)
 
     # Set neural network architecture
@@ -65,11 +65,11 @@ class AutoencoderRetrievalModel(AbstractRetrievalModel):
 
 
     # Compile
-    def compile(self, loss="binary_crossentropy", optimizer="adam"):
+    def compile(self, loss="binary_crossentropy", optimizer="adam"): #?컴파일?
         self.autoencoder.compile(optimizer=optimizer, loss=loss)
 
     # Load model architecture and weights
-    def load_models(self, loss="binary_crossentropy", optimizer="adam"):
+    def load_models(self, loss="binary_crossentropy", optimizer="adam"): #이미 학습되어진 모델 불러오기
         print("Loading models...")
         self.autoencoder = keras.models.load_model(
             self.info["autoencoderFile"])
@@ -80,7 +80,7 @@ class AutoencoderRetrievalModel(AbstractRetrievalModel):
         self.decoder.compile(optimizer=optimizer, loss=loss)
 
     # Save model architecture and weights to file
-    def save_models(self):
+    def save_models(self): #모델 학습 후 구조와 가중치를 저장하는 함수
         print("Saving models...")
         self.autoencoder.save(self.info["autoencoderFile"])
         self.encoder.save(self.info["encoderFile"])

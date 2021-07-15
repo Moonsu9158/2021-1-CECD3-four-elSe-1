@@ -43,5 +43,5 @@ class SimpleAE(AbstractAE):
     def getOutputshape(self):
         return (self.encoded.shape[1],)
     
-    def call(self, inputs, training=False):
+    def __call__(self, inputs, training=False):
         return self.makeAutoencoder(self)

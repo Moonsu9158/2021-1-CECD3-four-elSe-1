@@ -17,7 +17,7 @@ for path in tqdm(images_path):
 image_retrieval()
 """
 
-from image_retrieval.src.SimpleAE import SimpleAE
+from src.SimpleAE import *
 import os
 from glob import glob
 
